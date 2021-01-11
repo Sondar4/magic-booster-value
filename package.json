@@ -1,0 +1,33 @@
+{
+  "name": "magic-booster-value",
+  "version": "1.0.0",
+  "description": "Explore the average value of a draft booster.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "parcel ./src/index.html --open",
+    "test": "jest --passWithNoTests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sondar4/magic-booster-value.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sondar4/magic-booster-value/issues"
+  },
+  "homepage": "https://github.com/Sondar4/magic-booster-value#readme",
+  "devDependencies": {
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3"
+  },
+  "dependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "parcel-bundler": "^1.12.4",
+    "node-fetch": "^2.6.1"
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
+}
