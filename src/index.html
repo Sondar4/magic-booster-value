@@ -2,11 +2,29 @@
 <html>
   <head>
     <title>Magic Booster Value</title>
+    <link rel='stylesheet' type='text/css' href='./styles.css'>
   </head>
   <body>
     <h1>Magic Booster Vaule</h1>
+    <p>* This site uses data gathered from <a href='https://scryfall.com/'>Scryfall's</a> API. Please, don't overuse the site to keep the number of request to the API low.
+    </p>
+    <p>** The formula used to calculate the Expected Value of a draft booster is valid for boosters from sets newer than Innistrad.
+    </p>
+    <p>*** This site is under development, thus it may contain errors. The code can be found at the Github <a href='https://github.com/Sondar4/magic-booster-value'>repo</a>.
+    </p>
+    <p id='fetching' class='fetching'></p>
     <h2>Choose a set:</h2>
     <select id='select-set' name='set'></select>
+    <h3>Average Booster Value:</h3>
+    <p id='avg-booster-val'></p>
+    <h3>Average Mythic Value:</h3>
+    <p id='avg-mythic-val'></p>
+    <h3>Average Rare Value:</h3>
+    <p id='avg-rare-val'></p>
+    <h3>Average Uncommon Value:</h3>
+    <p id='avg-uncommon-val'></p>
+    <h3>Average Common Value:</h3>
+    <p id='avg-common-val'></p>
     <script src='./index.js'></script>
   </body>
 </html>

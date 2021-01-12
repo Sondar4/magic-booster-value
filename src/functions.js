@@ -23,7 +23,7 @@ export async function listSets() {
 
 async function _listExpansionSets() {
   const sets = await listSets();
-  return sets.filter((set) => set.type == 'expansion')
+  return sets.filter((set) => set.type == 'expansion' || set.type == 'core');
 }
 
 export async function initSetSelect(selector) {
@@ -55,33 +55,100 @@ export async function getSetUniqueCards(setCode) {
     cards.map((card) => ({
       name: card.name,
       rarity: card.rarity,
-      price: card.prices.eur
+      price: Number(card.prices.eur)
     }))
   );
 }
 
-async function _getAvgMythicValue(setCode) {
-  const cards = await getSetUniqueCards(setCode);
-  return cards.filter((card) => card.rarity == 'mythic').avg();
+function _getAvgMythicValue(cards) {
+  return cards.filter((card) => card.rarity == 'mythic')
+    .map((card) => card.price)
+    .avg();
 }
 
-async function _getAvgRareValue(setCode) {
-  const cards = await getSetUniqueCards(setCode);
-  return cards.filter((card) => card.rarity == 'rare').avg();
+function _getAvgRareValue(cards) {
+  return cards.filter((card) => card.rarity == 'rare')
+    .map((card) => card.price)
+    .avg();
 }
 
-async function _getAvgUncommonValue(setCode) {
-  const cards = await getSetUniqueCards(setCode);
-  return cards.filter((card) => card.rarity == 'uncommon').avg();
+function _getAvgUncommonValue(cards) {
+  return cards.filter((card) => card.rarity == 'uncommon')
+    .map((card) => card.price)
+    .avg();
 }
 
-async function _getAvgCommonValue(setCode) {
+function _getAvgCommonValue(cards) {
+  return cards.filter((card) => card.rarity == 'common')
+    .map((card) => card.price)
+    .avg();
+}
+
+function _initMythicVal(cards) {
+  let select = document.querySelector('#avg-mythic-val');
+  select.innerHTML = _getAvgMythicValue(cards).toFixed(2) + ' €';
+}
+
+function _initRareVal(cards) {
+  let select = document.querySelector('#avg-rare-val');
+  select.innerHTML = _getAvgRareValue(cards).toFixed(2) + ' €';
+}
+
+function _initUncommonVal(cards) {
+  let select = document.querySelector('#avg-uncommon-val');
+  select.innerHTML = _getAvgUncommonValue(cards).toFixed(2) + ' €';
+}
+
+function _initCommonVal(cards) {
+  let select = document.querySelector('#avg-common-val');
+  select.innerHTML = _getAvgCommonValue(cards).toFixed(2) + ' €';
+}
+
+function _avgBoosterValue(cards) {
+  // Calculate expected values
+  // https://en.wikipedia.org/wiki/Expected_value
+  // https://mtg.fandom.com/wiki/Print_sheet
+  const expMythicVal = _getAvgMythicValue(cards) * (1 / 8);
+  const expRareVal = _getAvgRareValue(cards) * (7 / 8);
+  const expUncommonVal = _getAvgUncommonValue(cards) * 3;
+  const expCommonVal = _getAvgCommonValue(cards) * 10;
+  return expMythicVal + expRareVal + expUncommonVal + expCommonVal;
+}
+
+function _initBoosterValue(cards) {
+  let select = document.querySelector('#avg-booster-val');
+  select.innerHTML = _avgBoosterValue(cards).toFixed(2) + ' €';
+}
+
+function _initFetchingWarning() {
+  document.querySelector('#fetching').innerHTML = 'Fetching data...';
+}
+
+function _removeFetchingWarning() {
+  document.querySelector('#fetching').innerHTML = '';
+}
+
+async function _initValues(setCode) {
+  _initFetchingWarning();
   const cards = await getSetUniqueCards(setCode);
-  return cards.filter((card) => card.rarity == 'common').avg();
+  _initBoosterValue(cards);
+  _initMythicVal(cards);
+  _initRareVal(cards);
+  _initUncommonVal(cards);
+  _initCommonVal(cards);
+  _removeFetchingWarning();
+}
+
+async function addChangeEventToSelectSet(selector) {
+  let select = document.querySelector(selector);
+  select.addEventListener('change', async () => {
+    await _initValues(select.value);
+  });
 }
 
 export default {
   listSets,
   initSetSelect,
-  getSetUniqueCards
+  getSetUniqueCards,
+  addChangeEventToSelectSet
 };
