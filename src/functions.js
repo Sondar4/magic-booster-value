@@ -64,7 +64,7 @@ async function _getAllCards(res) {
 }
 
 export async function getSetUniqueCards(setCode) {
-  return fetch(`https://api.scryfall.com/cards/search?order=set&q=e%3A${setCode}&unique=prints`)
+  return fetch(`https://api.scryfall.com/cards/search?order=set&q=e%3A${setCode}&unique=cards`)
   .then((res) => res.json())
   .then((res) => _getAllCards(res))
   .then((cards) =>
