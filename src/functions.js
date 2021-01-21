@@ -1,6 +1,9 @@
 import fetch from 'node-fetch';
 
 
+const innistradDate = '2011-09-30';
+const zendikarDate = '2020-09-25';
+
 Array.prototype.avg = function() {
   if (this.length == 0) return 0;
   const sum = this.reduce((a, b) => a + b, 0);
@@ -17,6 +20,7 @@ export async function listSets() {
         type: set.set_type,
         code: set.code,
         cards_uri: set.search_uri,
+        release_dt: set.released_at
       }))
     );
 }
@@ -24,6 +28,18 @@ export async function listSets() {
 async function _listExpansionSets() {
   const sets = await listSets();
   return sets.filter((set) => set.type == 'expansion' || set.type == 'core');
+}
+
+async function _getSet(setCode) {
+  return fetch(`https://api.scryfall.com/sets/${setCode}`)
+  .then((res) => res.json())
+  .then((set) => ({
+    name: set.name,
+    type: set.set_type,
+    code: set.code,
+    cards_uri: set.search_uri,
+    release_dt: set.released_at
+  }));
 }
 
 export async function initSetSelect(selector) {
@@ -104,20 +120,33 @@ function _initCommonVal(cards) {
   select.innerHTML = _getAvgCommonValue(cards).toFixed(2) + ' €';
 }
 
-function _avgBoosterValue(cards) {
-  // Calculate expected values
-  // https://en.wikipedia.org/wiki/Expected_value
-  // https://mtg.fandom.com/wiki/Print_sheet
-  const expMythicVal = _getAvgMythicValue(cards) * (1 / 8);
-  const expRareVal = _getAvgRareValue(cards) * (7 / 8);
+function _avgBoosterValue(cards, setDate) {
+  const SetDate = new Date(setDate)
+  if (SetDate < new Date(innistradDate)) return -1;
+  let expMythicVal = 0;
+  let expRareVal = 0;
+  if (SetDate >= new Date(zendikarDate)) {
+    expMythicVal = _getAvgMythicValue(cards) * (1 / 7.4);
+    expRareVal = _getAvgRareValue(cards) * (6.4 / 7.4);
+  }
+  else {
+    expMythicVal = _getAvgMythicValue(cards) * (1 / 8);
+    expRareVal = _getAvgRareValue(cards) * (7 / 8);
+  }
   const expUncommonVal = _getAvgUncommonValue(cards) * 3;
   const expCommonVal = _getAvgCommonValue(cards) * 10;
   return expMythicVal + expRareVal + expUncommonVal + expCommonVal;
 }
 
-function _initBoosterValue(cards) {
+function _initBoosterValue(cards, setDate) {
   let select = document.querySelector('#avg-booster-val');
-  select.innerHTML = _avgBoosterValue(cards).toFixed(2) + ' €';
+  const avgBoosterValue = _avgBoosterValue(cards, setDate);
+  if (avgBoosterValue == -1) {
+    select.innerHTML = "Expected value is not available fot this set.";
+  }
+  else {
+    select.innerHTML = _avgBoosterValue(cards, setDate).toFixed(2) + ' €';
+  }
 }
 
 function _initFetchingWarning() {
@@ -130,8 +159,10 @@ function _removeFetchingWarning() {
 
 async function _initValues(setCode) {
   _initFetchingWarning();
+  // TODO: replace this with PromiseAll()
+  const set = await _getSet(setCode);
   const cards = await getSetUniqueCards(setCode);
-  _initBoosterValue(cards);
+  _initBoosterValue(cards, set.release_dt);
   _initMythicVal(cards);
   _initRareVal(cards);
   _initUncommonVal(cards);
