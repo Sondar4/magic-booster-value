@@ -38,7 +38,8 @@ async function _getSet(setCode) {
     type: set.set_type,
     code: set.code,
     cards_uri: set.search_uri,
-    release_dt: set.released_at
+    release_dt: set.released_at,
+    set_icon_uri: set.icon_svg_uri
   }));
 }
 
@@ -150,24 +151,34 @@ function _initBoosterValue(cards, setDate) {
 }
 
 function _initFetchingWarning() {
-  document.querySelector('#fetching').innerHTML = 'Fetching data...';
+  document.querySelector('#fetching').style.display = 'block';
 }
 
 function _removeFetchingWarning() {
-  document.querySelector('#fetching').innerHTML = '';
+  document.querySelector('#fetching').style.display = 'none';
+}
+
+function _setSetIcon(icon_uri) {
+  let img = document.querySelector('.set-icon');
+  img.src = icon_uri;
+  img.style.display = block;
 }
 
 async function _initValues(setCode) {
-  _initFetchingWarning();
-  // TODO: replace this with PromiseAll()
-  const set = await _getSet(setCode);
-  const cards = await getSetUniqueCards(setCode);
-  _initBoosterValue(cards, set.release_dt);
-  _initMythicVal(cards);
-  _initRareVal(cards);
-  _initUncommonVal(cards);
-  _initCommonVal(cards);
-  _removeFetchingWarning();
+  if (setCode != '') {
+    _initFetchingWarning();
+    // Calls are made one after the other to
+    // put some time between requests to the API
+    const set = await _getSet(setCode);
+    const cards = await getSetUniqueCards(setCode);
+    _initBoosterValue(cards, set.release_dt);
+    _initMythicVal(cards);
+    _initRareVal(cards);
+    _initUncommonVal(cards);
+    _initCommonVal(cards);
+    _removeFetchingWarning();
+    _setSetIcon(set.set_icon_uri);
+  }
 }
 
 async function addChangeEventToSelectSet(selector) {

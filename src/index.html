@@ -3,31 +3,53 @@
   <head>
     <title>Magic Booster Value</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Open+Sans:wght@700&display=swap" rel="stylesheet">
     <link rel='stylesheet' type='text/css' href='./styles.css'>
   </head>
   <body>
-    <h1>Magic Booster Value</h1>
-    <p>* This site uses data gathered from <a href='https://scryfall.com/'>Scryfall's</a> API. Please, don't overuse the site to keep the number of request to the API low.
-    </p>
-    <p>** The formula used to calculate the Expected Value of a draft booster is valid for boosters from sets newer than Innistrad.
-    </p>
-    <p>*** This site is under development, thus it may contain errors. The code can be found at the Github <a href='https://github.com/Sondar4/magic-booster-value'>repo</a>.
-    </p>
-    <p>Absolutely no guarantee is made for any price information.
-    </p>
-    <p id='fetching' class='fetching'></p>
-    <h2>Choose a set:</h2>
-    <select id='select-set' name='set'></select>
-    <h3>Average Booster Value:</h3>
-    <p id='avg-booster-val'></p>
-    <h3>Average Mythic Value:</h3>
-    <p id='avg-mythic-val'></p>
-    <h3>Average Rare Value:</h3>
-    <p id='avg-rare-val'></p>
-    <h3>Average Uncommon Value:</h3>
-    <p id='avg-uncommon-val'></p>
-    <h3>Average Common Value:</h3>
-    <p id='avg-common-val'></p>
+    <header>
+      <h1>Magic Booster Value</h1>
+      <ul>
+        <li>
+          This site uses data gathered from <a href='https://scryfall.com/'>Scryfall's</a> API. Please, don't overuse the site to keep the number of request to the API low.
+        </li>
+        <li>
+          The formula used to calculate the Expected Value of a draft booster is valid for boosters from sets newer than Innistrad.
+        </li>
+        <li>
+          This site is under development, thus it may contain errors. The code can be found at the Github <a href='https://github.com/Sondar4/magic-booster-value'>repo</a>.
+        </li>
+        <li>
+          Absolutely no guarantee is made for any price information.
+        </li>
+      </ul>
+    </header>
+    <main>
+      <div class='set-info'>
+        <div class='set-prices'>
+          <p id='fetching' class='fetching'>Fetching data</p>
+          <h2>Choose a set:</h2>
+          <select id='select-set' name='set'></select>
+          <h3>Average Booster Value:</h3>
+          <p id='avg-booster-val'></p>
+          <h3>Average Mythic Value:</h3>
+          <p id='avg-mythic-val'></p>
+          <h3>Average Rare Value:</h3>
+          <p id='avg-rare-val'></p>
+          <h3>Average Uncommon Value:</h3>
+          <p id='avg-uncommon-val'></p>
+          <h3>Average Common Value:</h3>
+          <p id='avg-common-val'></p>
+        </div>
+        <div class='set-image-container'>
+          <img class='set-icon'>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <p>Black Hole by tulpahn from the Noun Project is used for the list bullets.</p>
+    </footer>
     <script src='./index.js'></script>
   </body>
 </html>
